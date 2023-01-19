@@ -1,0 +1,52 @@
+<script>
+export default {
+    name: 'ProjectCard',
+    data() {
+        return {
+            descriptionMaxLength: 200,
+            baseUrl: "http://127.0.0.1:8000",
+        }
+    },
+    props: {
+        project: Object,
+    },
+    computed: {
+        descriptionPreview() {
+            if (this.project.description && this.project.description.length > this.descriptionMaxLength) {
+                return this.project.description.substr(0, this.descriptionMaxLength) + '...';
+            }
+            return this.project.description;
+        }
+    }
+}
+</script>
+
+<template>
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row justify-content-between">
+                <div class="col-4">
+                    <img v-if="project.cover_image" class="w-100" :src="`${baseUrl}/storage/${project.cover_image}`" alt="">
+                    <div v-else>
+                        Nessuna immagine
+                    </div>
+                </div>
+                <div class="col-7">
+                    <h3 class="card-title">{{ project.title }}</h3>
+                    <div class="d-flex justify-content-between">
+                        <p>
+                            <span v-for="technology in project.technologies" :key="technology.id">#{{ technology.name }} </span>
+                        </p>
+                        <p class="text-end text-success">{{ project.type ? project.type.name : 'Nessun tipo' }}
+                        </p>
+                    </div>
+                    <p class="card-text">
+                        {{ descriptionPreview }}
+                    </p>
+                    <a class="btn btn-primary" href="">Leggi</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</template>
