@@ -1,11 +1,11 @@
 <script>
 import axios from 'axios';
-import AppLoader from './AppLoader.vue';
-import ProjectCard from './ProjectCard.vue';
+import AppLoader from '../components/AppLoader.vue';
+import ProjectCard from '../components/ProjectCard.vue';
 import { store } from '../store';
 
 export default {
-    name: "AppMain",
+    name: "ProjectsList",
     components: { ProjectCard, AppLoader },
     data() {
         return {
@@ -32,17 +32,18 @@ export default {
                 this.projects = resp.data.results.data;
                 this.currentPage = resp.data.results.current_page;
                 this.lastPage = resp.data.results.last_page;
-                this.totalPosts = resp.data.results.total;
+                this.totalProjects = resp.data.results.total;
                 this.loading = false;
             });
         }
     },
+
 }
 </script>
 
 <template>
     <div class="container">
-        <h2 class="text-center mb-3">Tutti i progetti</h2>
+        <h2 class="text-center mb-3">Tutti i nostri progetti</h2>
         <AppLoader v-if="loading" />
         <div v-else class="row justify-content-center py-4">
             <div class="col-11 col-md-10 col-lg-8">
@@ -54,9 +55,9 @@ export default {
                     </div>
                     <div>
                         <a class="btn btn-success me-2" :class="currentPage === 1 ? 'disabled' : ''" href=""
-                            @click.prevent="getPosts(currentPage - 1)">Indietro</a>
+                            @click.prevent="getProjects(currentPage - 1)">Indietro</a>
                         <a class="btn btn-success" :class="{ 'disabled': currentPage === lastPage }" href=""
-                            @click.prevent="getPosts(currentPage + 1)">Avanti</a>
+                            @click.prevent="getProjects(currentPage + 1)">Avanti</a>
                     </div>
                 </nav>
             </div>
