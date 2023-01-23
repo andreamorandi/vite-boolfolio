@@ -11,6 +11,8 @@ export default {
         return {
             store,
             projects: [],
+            types: [],
+            selectedType: "",
             currentPage: 1,
             lastPage: null,
             totalProjects: null,
@@ -19,12 +21,14 @@ export default {
     },
     created() {
         this.getProjects(1);
+        this.getTypes();
     },
     methods: {
         getProjects(page) {
             const options = {
                 params: {
-                    page
+                    page,
+                    ...this.selectedType && { type_id: this.selectedType }
                 }
             }
             this.loading = true;
@@ -34,6 +38,11 @@ export default {
                 this.lastPage = resp.data.results.last_page;
                 this.totalProjects = resp.data.results.total;
                 this.loading = false;
+            });
+        },
+        getTypes() {
+            axios.get(`${this.store.apiBaseUrl}/api/types`).then(resp => {
+                this.types = resp.data.results;
             });
         }
     },
@@ -47,7 +56,16 @@ export default {
         <AppLoader v-if="loading" />
         <div v-else class="row justify-content-center py-4">
             <div class="col-11 col-md-10 col-lg-8">
-                <p class="text-end">Totale {{ totalProjects }} progetti trovati</p>
+                <div class="d-flex justify-content-between mb-4">
+                    <form @submit.prevent="getProjects(1)" action="" class="d-flex">
+                        <select id="" class="form-select" v-model="selectedType">
+                            <option value="">Tutti</option>
+                            <option v-for="type in types" :value="type.id">{{ type.name }}</option>
+                        </select>
+                        <button type="submit" class="btn btn-success">Filtra</button>
+                    </form>
+                    <p class="text-end">Totale {{ totalProjects }} progetti trovati</p>
+                </div>
                 <ProjectCard :project="project" v-for="project in projects" :key="project.id" />
                 <nav class="navigation d-flex justify-content-between">
                     <div>
